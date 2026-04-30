@@ -12,23 +12,24 @@ if (isset($_GET['dificultad'])) {
 
 $dificultad = $_SESSION['dificultad'];
 
-
 if (!isset($_SESSION['pregunta_num'])) {
     $_SESSION['pregunta_num'] = 1;
     $_SESSION['score'] = 0;
     $_SESSION['racha'] = 0;
 }
 
-
+// API
 $url = "https://ghibliapi.dev/films";
 $response = file_get_contents($url);
 $films = json_decode($response, true);
 
+// ❗ FIX ERROR PATH
 if (!$films) {
-header('Location: error.php');
-exit;
+    header('Location: error/error_index.php');
+    exit;
 }
 
+// PROCESAR RESPUESTA
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['respuesta']) && isset($_SESSION['correcta'])) {
@@ -59,49 +60,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['pregunta_num']++;
 }
 
-
+// ❗ FIX FINAL → PASAR SCORE
 if ($_SESSION['pregunta_num'] > 10) {
-    $score = $_SESSION['score'];
-    session_destroy();
-?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Resultados</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<div class="container">
-    <h1>🏆 Resultado final</h1>
-    <p style="font-size: 22px; font-weight: bold;"><?php echo $score; ?> / 10</p>
-
-    <p>
-        <?php
-        if ($score <= 4) echo "😅 ¿Viste aunque sea El Viaje de Chihiro...?"; 
-        elseif ($score <= 7) echo "🙂 ¡Nada mal!"; 
-        else echo "🔥 ¡Eres un maestro Ghibli!";
-        ?>
-    </p>
-
-    <a href="home.php" class="btn-restart">Jugar de nuevo</a>
-</div>
-
-</body>
-</html>
-<?php
-exit;
+    $_SESSION['final_score'] = $_SESSION['score'];
+    header('Location: mensaje_final.php');
+    exit;
 }
 
+// VARIABLES SEGURAS
 $pregunta = "";
 $respuesta_correcta = "";
 $opciones = [];
 
-
+// PELÍCULA RANDOM
 $pelicula = $films[array_rand($films)];
 
-
+// DIFICULTAD
 if ($dificultad == "facil") {
     $tipos_posibles = [1];
 } elseif ($dificultad == "medio") {
@@ -112,7 +86,7 @@ if ($dificultad == "facil") {
 
 $tipo = $tipos_posibles[array_rand($tipos_posibles)];
 
-
+// TIPOS DE PREGUNTA
 if ($tipo == 1) {
     $pregunta = "¿Quién dirigió \"" . $pelicula['title'] . "\"?";
     $respuesta_correcta = $pelicula['director'];
@@ -137,16 +111,14 @@ if ($tipo == 1) {
     $opcionA = $peli1['title'];
     $opcionB = $peli2['title'];
 
-    if ($peli1['running_time'] > $peli2['running_time']) {
-        $respuesta_correcta = $opcionA;
-    } else {
-        $respuesta_correcta = $opcionB;
-    }
+    $respuesta_correcta = ($peli1['running_time'] > $peli2['running_time'])
+        ? $opcionA
+        : $opcionB;
 
     $opciones = [$opcionA, $opcionB];
 }
 
-
+// OPCIONES (solo si NO es tipo 4)
 if ($tipo != 4) {
 
     $opciones = [$respuesta_correcta];
@@ -171,12 +143,11 @@ if ($tipo != 4) {
     shuffle($opciones);
 }
 
-
+// VALIDACIÓN FINAL
 if (empty($pregunta) || empty($opciones)) {
     echo "Error generando la pregunta";
     exit;
 }
-
 
 $_SESSION['correcta'] = $respuesta_correcta;
 ?>
