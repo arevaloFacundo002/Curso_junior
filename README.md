@@ -67,6 +67,9 @@ Endpoints:
 /enpoints
   people.php
   locations.php
+/error
+  error_index.php
+  error_enpoints.php
 home.php
 index.php
 README.md
