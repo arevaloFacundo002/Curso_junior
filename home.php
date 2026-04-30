@@ -40,8 +40,8 @@
 
 
         <div class="extra-links">
-            <a href="people.php" class="btn-extra">👤 Ver personajes</a>
-            <a href="locations.php" class="btn-extra">📍 Ver locaciones</a>
+            <a href="enpoints/people.php" class="btn-extra">👤 Ver personajes</a>
+            <a href="enpoints/locations.php" class="btn-extra">📍 Ver locaciones</a>
         </div>
 
     </form>

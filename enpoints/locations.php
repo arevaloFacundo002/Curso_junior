@@ -1,18 +1,18 @@
 <?php
 session_start();
 
-$url = "https://ghibliapi.dev/people";
+$url = "https://ghibliapi.dev/locations";
 $response = file_get_contents($url);
-$people = json_decode($response, true);
+$locations = json_decode($response, true);
 
-if (!$people) {
+if (!$locations) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
@@ -20,7 +20,7 @@ if (!$people) {
     <h1>⚠ Error de conexión</h1>
     <p>No se pudieron cargar los datos de la API.</p>
 
-    <a href="home.php" class="btn-restart">⬅ Volver</a>
+    <a href="../home.php" class="btn-restart">⬅ Volver</a>
 </div>
 
 </body>
@@ -34,22 +34,22 @@ exit;
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Personajes</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Locaciones</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <div class="container">
 
-    <h1>👤 Personajes</h1>
+    <h1>📍 Locaciones</h1>
 
     <ul class="listado">
-        <?php foreach ($people as $per): ?>
-            <li class="item"><?php echo $per['name']; ?></li>
+        <?php foreach ($locations as $loc): ?>
+            <li class="item"><?php echo $loc['name']; ?></li>
         <?php endforeach; ?>
     </ul>
 
-    <a href="home.php" class="btn-restart">⬅ Volver al inicio</a>
+    <a href="../home.php" class="btn-restart">⬅ Volver al inicio</a>
 
 </div>
 
