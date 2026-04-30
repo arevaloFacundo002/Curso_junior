@@ -12,7 +12,7 @@ if (isset($_GET['dificultad'])) {
 
 $dificultad = $_SESSION['dificultad'];
 
-// Inicializar juego
+
 if (!isset($_SESSION['pregunta_num'])) {
     $_SESSION['pregunta_num'] = 1;
     $_SESSION['score'] = 0;
@@ -25,25 +25,7 @@ $response = file_get_contents($url);
 $films = json_decode($response, true);
 
 if (!$films) {
-?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Error</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<div class="container">
-    <h1>⚠ Error de conexión</h1>
-    <p>No se pudieron cargar los datos de la API.</p>
-    <a href="index.php?dificultad=<?php echo $dificultad; ?>" class="btn-restart">🔄 Reintentar</a>
-</div>
-
-</body>
-</html>
-<?php
+header('Location: error.php');
 exit;
 }
 
