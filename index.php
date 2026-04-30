@@ -18,18 +18,18 @@ if (!isset($_SESSION['pregunta_num'])) {
     $_SESSION['racha'] = 0;
 }
 
-// API
+
 $url = "https://ghibliapi.dev/films";
 $response = file_get_contents($url);
 $films = json_decode($response, true);
 
-// ❗ FIX ERROR PATH
+
 if (!$films) {
     header('Location: error/error_index.php');
     exit;
 }
 
-// PROCESAR RESPUESTA
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['respuesta']) && isset($_SESSION['correcta'])) {
@@ -60,22 +60,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['pregunta_num']++;
 }
 
-// ❗ FIX FINAL → PASAR SCORE
+
 if ($_SESSION['pregunta_num'] > 10) {
     $_SESSION['final_score'] = $_SESSION['score'];
     header('Location: mensaje_final.php');
     exit;
 }
 
-// VARIABLES SEGURAS
+
 $pregunta = "";
 $respuesta_correcta = "";
 $opciones = [];
 
-// PELÍCULA RANDOM
+
 $pelicula = $films[array_rand($films)];
 
-// DIFICULTAD
+
 if ($dificultad == "facil") {
     $tipos_posibles = [1];
 } elseif ($dificultad == "medio") {
@@ -86,7 +86,7 @@ if ($dificultad == "facil") {
 
 $tipo = $tipos_posibles[array_rand($tipos_posibles)];
 
-// TIPOS DE PREGUNTA
+
 if ($tipo == 1) {
     $pregunta = "¿Quién dirigió \"" . $pelicula['title'] . "\"?";
     $respuesta_correcta = $pelicula['director'];
@@ -118,7 +118,7 @@ if ($tipo == 1) {
     $opciones = [$opcionA, $opcionB];
 }
 
-// OPCIONES (solo si NO es tipo 4)
+
 if ($tipo != 4) {
 
     $opciones = [$respuesta_correcta];
@@ -143,7 +143,7 @@ if ($tipo != 4) {
     shuffle($opciones);
 }
 
-// VALIDACIÓN FINAL
+
 if (empty($pregunta) || empty($opciones)) {
     echo "Error generando la pregunta";
     exit;
